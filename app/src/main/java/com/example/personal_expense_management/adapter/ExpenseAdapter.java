@@ -6,67 +6,59 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.personal_expense_management.R;
-import com.example.personal_expense_management.models.MonthExpenses;
 import com.example.personal_expense_management.models.Expense;
+import com.example.personal_expense_management.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder> {
+public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHolder> {
+    private List<Expense> expenseList;
+    private OnExpenseClickListener onExpenseClickListener;
 
-    private List<MonthExpenses> monthExpensesList;
-
-    public ExpenseAdapter(List<MonthExpenses> monthExpenses) {
-        this.monthExpensesList = monthExpenses != null ? monthExpenses : new ArrayList<>();
+    public interface OnExpenseClickListener {
+        void onExpenseClick(Expense expense);
     }
 
-
-    public void setMonthExpenses(List<MonthExpenses> monthExpenses) {
-        this.monthExpensesList = monthExpenses != null ? monthExpenses : new ArrayList<>();
-        notifyDataSetChanged();  // لتحديث الواجهة
+    public ExpenseAdapter(List<Expense> expenseList, OnExpenseClickListener onExpenseClickListener) {
+        this.expenseList = expenseList;
+        this.onExpenseClickListener = onExpenseClickListener;
     }
 
     @NonNull
     @Override
-    public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_month_expense_header, parent, false);
-        return new ExpenseViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_expense, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
-        MonthExpenses monthExpenses = (MonthExpenses) monthExpensesList.get(position);
-        holder.bind(monthExpenses);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Expense expense = expenseList.get(position);
+        holder.titleTextView.setText(expense.getTitle());
+        holder.amountTextView.setText(String.valueOf(expense.getAmount()));
+        holder.dateTextView.setText(expense.getDate());
+
+        holder.itemView.setOnClickListener(v -> onExpenseClickListener.onExpenseClick(expense));
     }
 
     @Override
     public int getItemCount() {
-        return monthExpensesList.size();
+        return expenseList.size();
     }
 
-    static class ExpenseViewHolder extends RecyclerView.ViewHolder {
-        TextView monthTextView;
-        RecyclerView recyclerViewExpenses;  // RecyclerView لعرض النفقات
-        ExpenseItemAdapter expenseItemAdapter;  // محول لعرض النفقات
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView titleTextView;
+        TextView amountTextView;
+        TextView dateTextView;
 
-        public ExpenseViewHolder(@NonNull View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            monthTextView = itemView.findViewById(R.id.monthTextView); // تأكد من المعرف الصحيح
-            recyclerViewExpenses = itemView.findViewById(R.id.recyclerViewExpenses); // RecyclerView فرعي
-
-            // إعداد RecyclerView للنفقات
-            recyclerViewExpenses.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-            expenseItemAdapter = new ExpenseItemAdapter(new ArrayList<>()); // محول جديد
-            recyclerViewExpenses.setAdapter(expenseItemAdapter);
-        }
-
-        public void bind(MonthExpenses monthExpenses) {
-            monthTextView.setText(monthExpenses.getMonth());
-            expenseItemAdapter.setExpenses(monthExpenses.getExpenses()); // تمرير النفقات إلى المحول الفرعي
+            titleTextView = itemView.findViewById(R.id.expenseTitle);
+            dateTextView = itemView.findViewById(R.id.expenseDate);
+            amountTextView = itemView.findViewById(R.id.expenseAmount);
         }
     }
 }

@@ -1,26 +1,28 @@
 package com.example.personal_expense_management.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MonthExpenses {
-    private String month;  // هنا يمكن أن يكون اسم الشهر
+    private String month;
     private List<Expense> expenses;
 
     public MonthExpenses(String month, List<Expense> expenses) {
         this.month = month;
-        this.expenses = expenses;
+        this.expenses = expenses != null ? expenses : new ArrayList<>();
     }
 
+    // Getters and setters
     public String getMonth() {
-        return month;  // هذه هي الطريقة الحالية
+        return month;
     }
 
     public List<Expense> getExpenses() {
         return expenses;
     }
 
-    // إذا كنت تريد استخدام getMonthName بدلاً من getMonth
-    public String getMonthName() {
-        return month; // أو يمكنك تعديلها لتعيد اسم الشهر بشكل مختلف إذا لزم الأمر
+    // Method to add an expense
+    public void addExpense(Expense expense) {
+        expenses.add(expense);
     }
 }

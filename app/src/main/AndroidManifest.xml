@@ -16,7 +16,7 @@
             android:name=".activity_add_edit_expense"
             android:exported="false" />
         <activity
-            android:name=".list"
+            android:name=".ListActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

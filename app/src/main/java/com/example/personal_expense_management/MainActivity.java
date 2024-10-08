@@ -24,9 +24,6 @@ public class MainActivity extends AppCompatActivity {
     public SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    private final String DEFAULT_USERNAME = "mySavedUsername";
-    private final String DEFAULT_PASSWORD = "mySavedPassword";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         usernameEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
-        titleTextView = findViewById(R.id.titleTextView); // افترض أن هناك TextView بعنوان الواجهة
+        titleTextView = findViewById(R.id.titleTextView);
         rememberPasswordCheckBox = findViewById(R.id.rememberPasswordCheckBox);
 
         // إعداد SharedPreferences
@@ -57,28 +54,20 @@ public class MainActivity extends AppCompatActivity {
     private void checkIfUserExists() {
         String savedUsername = sharedPreferences.getString("username", null);
         String savedPassword = sharedPreferences.getString("password", null);
-
-        // إذا تم تفعيل remember password
         boolean rememberPassword = sharedPreferences.getBoolean("rememberPassword", false);
 
         if (savedUsername != null && savedPassword != null) {
-            // المستخدم مسجل بالفعل
             titleTextView.setText("Enter your username and password");
-            // إذا تم تفعيل rememberPassword ، نقله مباشرة إلى الشاشة الرئيسية
             if (rememberPassword) {
                 Toast.makeText(this, "Logging in automatically...", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, list.class);
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
                 startActivity(intent);
                 finish();
             }
-
-
         } else {
-            // لا يوجد مستخدم
             titleTextView.setText("Create your user");
         }
     }
-
 
     private void handleLogin() {
         String username = usernameEditText.getText().toString();
@@ -87,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
         String savedUsername = sharedPreferences.getString("username", null);
         String savedPassword = sharedPreferences.getString("password", null);
 
-        // في أول مرة يتم فيها حفظ بيانات المستخدم
         if (savedUsername == null && savedPassword == null) {
             editor.putString("username", username);
             editor.putString("password", password);
@@ -96,30 +84,23 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(this, "User created successfully!", Toast.LENGTH_SHORT).show();
 
-            // إذا تم تفعيل خيار تذكر كلمة المرور، الانتقال إلى الشاشة الرئيسية
             if (rememberPasswordCheckBox.isChecked()) {
-                Intent intent = new Intent(MainActivity.this, list.class);
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
                 startActivity(intent);
                 finish();
             }
-
         } else {
-            // التحقق من صحة بيانات المستخدم المدخلة
             if (username.equals(savedUsername) && password.equals(savedPassword)) {
-                // التحقق من remember password
                 if (rememberPasswordCheckBox.isChecked()) {
                     editor.putBoolean("rememberPassword", true);
                     editor.apply();
                 }
 
-                // الانتقال إلى الشاشة الرئيسية
-                Intent intent = new Intent(MainActivity.this, list.class);
+                Intent intent = new Intent(MainActivity.this, ListActivity.class);
                 startActivity(intent);
                 finish();
             } else {
-                // في حالة إدخال كلمة مرور أو اسم مستخدم خاطئ
                 Toast.makeText(this, "Username or password is incorrect!", Toast.LENGTH_SHORT).show();
-
             }
         }
     }

@@ -1,27 +1,26 @@
 package com.example.personal_expense_management;
 
-import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.personal_expense_management.database.ExpenseDatabase;
 import com.example.personal_expense_management.models.Expense;
 
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class activity_add_edit_expense extends AppCompatActivity {
 
-    private EditText editTextTitle, editTextAmount, editTextDate, editTextDescription;
-    private Button buttonSave;
+    private EditText editTextTitle, editTextAmount, editTextDescription;
+    private Button saveButton;
     private ExpenseDatabase expenseDatabase;
-    private boolean isEditMode = false;
-    private int expenseId = -1;
+    private Expense existingExpense;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,76 +29,70 @@ public class activity_add_edit_expense extends AppCompatActivity {
 
         editTextTitle = findViewById(R.id.editTextTitle);
         editTextAmount = findViewById(R.id.editTextAmount);
-        editTextDate = findViewById(R.id.editTextDate);
         editTextDescription = findViewById(R.id.editTextDescription);
-        buttonSave = findViewById(R.id.buttonSave);
+        saveButton = findViewById(R.id.buttonSave);
+
         expenseDatabase = ExpenseDatabase.getInstance(this);
 
-        // تحقق مما إذا كان في وضع التحرير
-        if (getIntent() != null && getIntent().hasExtra("expenseId")) {
-            isEditMode = true;
-            expenseId = getIntent().getIntExtra("expenseId", -1);
-            loadExpenseDetails(expenseId);
+        // استلام المعطيات من Intent
+        Intent intent = getIntent();
+        int expenseId = intent.getIntExtra("expenseId", -1);
+
+        if (expenseId != -1) {
+            // تعديل النفقة
+            existingExpense = expenseDatabase.expenseDao().getExpenseById(expenseId);
+            populateFields(existingExpense);
         }
 
-        // إعداد DatePickerDialog لاختيار التاريخ
-        editTextDate.setOnClickListener(v -> showDatePickerDialog());
-
-        // حفظ البيانات
-        buttonSave.setOnClickListener(v -> saveExpense());
+        saveButton.setOnClickListener(v -> saveExpense());
     }
 
-    private void showDatePickerDialog() {
-        final Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
-            // ضبط التاريخ في EditText
-            String formattedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
-            editTextDate.setText(formattedDate);
-        }, year, month, day);
-        datePickerDialog.show();
-    }
-
-    private void loadExpenseDetails(int id) {
-        // تحميل تفاصيل النفقات من قاعدة البيانات
-        Expense expense = expenseDatabase.expenseDao().getExpenseById(id);
-        if (expense != null) {
-            editTextTitle.setText(expense.getTitle());
-            editTextAmount.setText(String.valueOf(expense.getAmount()));
-            editTextDate.setText(expense.getDate());
-            editTextDescription.setText(expense.getDescription());
-        }
+    private void populateFields(Expense expense) {
+        editTextTitle.setText(expense.getTitle());
+        editTextAmount.setText(String.valueOf(expense.getAmount()));
+        editTextDescription.setText(expense.getDescription());
     }
 
     private void saveExpense() {
         String title = editTextTitle.getText().toString();
-        String amountStr = editTextAmount.getText().toString();
-        String date = editTextDate.getText().toString();
+        String amountString = editTextAmount.getText().toString();
         String description = editTextDescription.getText().toString();
 
-        if (title.isEmpty() || amountStr.isEmpty() || date.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+        if (title.isEmpty() || amountString.isEmpty()) {
+            Toast.makeText(this, "Please enter title and amount", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // تحويل المبلغ إلى double
-        double amount = Double.parseDouble(amountStr);
-
-        // إنشاء كائن Expense باستخدام الترتيب الصحيح
-        Expense expense = new Expense(title, date, amount, description);
-
-        if (isEditMode) {
-            // تحديث النفقات الحالية
-            expense.setId(expenseId);
-            expenseDatabase.expenseDao().updateExpense(expense);
-        } else {
-            // إضافة نفقات جديدة
-            expenseDatabase.expenseDao().insertExpense(expense);
+        double amount;
+        try {
+            amount = Double.parseDouble(amountString);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show();
+            return;
         }
 
+        // الحصول على التاريخ الحالي
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        if (existingExpense != null) {
+            // تحديث النفقة الموجودة
+            existingExpense.setTitle(title);
+            existingExpense.setAmount(amount);
+            existingExpense.setDate(currentDate); // استخدام التاريخ الحالي
+            existingExpense.setDescription(description);
+            expenseDatabase.expenseDao().updateExpense(existingExpense);
+            Toast.makeText(this, "Expense updated", Toast.LENGTH_SHORT).show();
+        } else {
+            // إضافة نفقة جديدة
+            Expense newExpense = new Expense(title, amount, currentDate, description);
+            expenseDatabase.expenseDao().insertExpense(newExpense);
+            Toast.makeText(this, "Expense added", Toast.LENGTH_SHORT).show();
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra("isUpdated", true); // أو أي قيمة تشير إلى التحديث
+        setResult(RESULT_OK, intent);
+        //startActivityForResult(intent, 1);
         finish();
     }
 

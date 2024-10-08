@@ -8,6 +8,7 @@
     tools:context=".MainActivity"
     android:background="@color/bak">
 
+
     <!-- Logo -->
     <ImageView
         android:id="@+id/appLogo"

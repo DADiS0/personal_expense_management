@@ -23,14 +23,6 @@
         />
 
     <EditText
-        android:id="@+id/editTextDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Date"
-        android:inputType="date"
-        />
-
-    <EditText
         android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
