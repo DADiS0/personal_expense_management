@@ -3,25 +3,24 @@ package com.example.personal_expense_management.models;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "expenses")
+@Entity(tableName = "expenses") // يمكنك تعديل اسم الجدول هنا
 public class Expense {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey(autoGenerate = true) // تحديد المعرف الرئيسي مع توليد تلقائي
+    private int id; // معرف الفئة
 
     private String title;
+    private String date; // yyyy-MM-dd
     private double amount;
-    private String date;
     private String description;
 
-    // Constructor
-    public Expense(String title, double amount, String date, String description) {
+    public Expense(String title, String date, double amount, String description) {
         this.title = title;
-        this.amount = amount;
         this.date = date;
+        this.amount = amount;
         this.description = description;
     }
 
-    // Getters and Setters
+    // Getter and Setter for id
     public int getId() {
         return id;
     }
@@ -34,32 +33,15 @@ public class Expense {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getDate() {
+        return date;
     }
 
     public double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getDescription() {
         return description;
     }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }
-

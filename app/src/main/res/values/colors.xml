@@ -3,5 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="bak">#e67e00</color>
+    <color name="color2">#9c2527</color>
+    <color name="light_gray">#D3D3D3</color>
 
 </resources>

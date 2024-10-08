@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox rememberPasswordCheckBox;
 
     // SharedPreferences لتخزين بيانات المستخدم
-    private SharedPreferences sharedPreferences;
+    public SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
     private final String DEFAULT_USERNAME = "mySavedUsername";

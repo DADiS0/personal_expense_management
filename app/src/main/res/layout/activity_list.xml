@@ -1,25 +1,74 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/bak">
+    android:orientation="vertical"
+    android:background="@color/bak"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:src="@mipmap/wallet"
+        android:contentDescription="Logo"/>
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:backgroundTint="#8B0000"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="start"
+        android:padding="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewExpenses"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/fabAddExpense" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:layout_marginBottom="16dp"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddExpense"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
-        android:backgroundTint="#9c2527"
-        android:src="@android:drawable/ic_input_add"
-        />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
+        <TextView
+            android:id="@+id/totalMonthTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Total this month: "
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:background="@color/color2"
+            android:layout_weight="1"
+            android:padding="8dp"/>
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/totalOverallTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Total overall: "
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:background="@color/color2"
+            android:padding="8dp"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddExpense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:src="@android:drawable/ic_input_add"
+            android:backgroundTint="@color/color2"
+            android:contentDescription="Add Expense"/>
+    </LinearLayout>
+</LinearLayout>

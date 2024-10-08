@@ -1,18 +1,19 @@
 package com.example.personal_expense_management;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.personal_expense_management.database.ExpenseDatabase;
 import com.example.personal_expense_management.models.Expense;
+
+import java.util.Calendar;
 
 public class activity_add_edit_expense extends AppCompatActivity {
 
@@ -41,8 +42,25 @@ public class activity_add_edit_expense extends AppCompatActivity {
             loadExpenseDetails(expenseId);
         }
 
+        // إعداد DatePickerDialog لاختيار التاريخ
+        editTextDate.setOnClickListener(v -> showDatePickerDialog());
+
         // حفظ البيانات
         buttonSave.setOnClickListener(v -> saveExpense());
+    }
+
+    private void showDatePickerDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
+            // ضبط التاريخ في EditText
+            String formattedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+            editTextDate.setText(formattedDate);
+        }, year, month, day);
+        datePickerDialog.show();
     }
 
     private void loadExpenseDetails(int id) {
@@ -58,16 +76,20 @@ public class activity_add_edit_expense extends AppCompatActivity {
 
     private void saveExpense() {
         String title = editTextTitle.getText().toString();
-        String amount = editTextAmount.getText().toString();
+        String amountStr = editTextAmount.getText().toString();
         String date = editTextDate.getText().toString();
         String description = editTextDescription.getText().toString();
 
-        if (title.isEmpty() || amount.isEmpty() || date.isEmpty()) {
+        if (title.isEmpty() || amountStr.isEmpty() || date.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Expense expense = new Expense(title, Double.parseDouble(amount), date, description);
+        // تحويل المبلغ إلى double
+        double amount = Double.parseDouble(amountStr);
+
+        // إنشاء كائن Expense باستخدام الترتيب الصحيح
+        Expense expense = new Expense(title, date, amount, description);
 
         if (isEditMode) {
             // تحديث النفقات الحالية
@@ -80,4 +102,5 @@ public class activity_add_edit_expense extends AppCompatActivity {
 
         finish();
     }
+
 }
