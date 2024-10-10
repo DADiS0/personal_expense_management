@@ -12,7 +12,7 @@ import com.example.personal_expense_management.models.Expense;
 
 @Database(entities = {Expense.class}, version = 1)
 public abstract class ExpenseDatabase extends RoomDatabase {
-
+//hjhjh
     private static ExpenseDatabase instance;
 
     public abstract ExpenseDao expenseDao();
