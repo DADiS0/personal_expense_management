@@ -2,8 +2,33 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Primary Colors -->
+    <color name="primary_color">#6C63FF</color>
+    <color name="primary_dark">#5A52D5</color>
+    <color name="secondary_color">#FF6B6B</color>
+    <color name="accent_color">#4ECDC4</color>
+    
+    <!-- Background Colors -->
+    <color name="background_light">#F8F9FA</color>
+    <color name="background_dark">#1A1A1A</color>
+    <color name="surface_color">#FFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#2D3436</color>
+    <color name="text_secondary">#636E72</color>
+    <color name="text_hint">#B2BEC3</color>
+    
+    <!-- Status Colors -->
+    <color name="success_color">#00B894</color>
+    <color name="warning_color">#FDCB6E</color>
+    <color name="error_color">#E17055</color>
+    
+    <!-- Legacy Colors -->
     <color name="bak">#e67e00</color>
     <color name="color2">#9c2527</color>
     <color name="light_gray">#D3D3D3</color>
-
+    
+    <!-- Bottom Navigation Colors -->
+    <color name="bottom_nav_color">@color/primary_color</color>
 </resources>
